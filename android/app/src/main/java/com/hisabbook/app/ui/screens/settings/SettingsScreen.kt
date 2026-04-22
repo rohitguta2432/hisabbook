@@ -63,9 +63,12 @@ fun SettingsScreen(
     bottomBar: @Composable () -> Unit,
     onExportBackup: () -> Unit = {},
     onImportBackup: () -> Unit = {},
+    onOpenLanguage: () -> Unit = {},
     vm: SettingsViewModel = hiltViewModel()
 ) {
-    var darkMode by remember { mutableStateOf(false) }
+    val darkModePref by vm.darkMode.collectAsState(initial = null)
+    val systemDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val darkMode = darkModePref ?: systemDark
     val lockEnabled by vm.lockEnabled.collectAsState(initial = true)
     val voiceStatus by vm.voiceStatus.collectAsState()
 
@@ -110,14 +113,16 @@ fun SettingsScreen(
                     trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsItem(
-                    icon = Icons.Default.Language,
-                    iconBg = MaterialTheme.colorScheme.primary,
-                    iconTint = MaterialTheme.colorScheme.onPrimary,
-                    title = stringResource(R.string.settings_bhasha),
-                    subtitle = stringResource(R.string.settings_bhasha_sub),
-                    trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
-                )
+                Row(modifier = Modifier.clickable(onClick = onOpenLanguage)) {
+                    SettingsItem(
+                        icon = Icons.Default.Language,
+                        iconBg = MaterialTheme.colorScheme.primary,
+                        iconTint = MaterialTheme.colorScheme.onPrimary,
+                        title = stringResource(R.string.settings_bhasha),
+                        subtitle = stringResource(R.string.settings_bhasha_sub),
+                        trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    )
+                }
             }
 
             SectionLabel(stringResource(R.string.settings_voice_ai))
@@ -169,7 +174,7 @@ fun SettingsScreen(
                     iconTint = MaterialTheme.colorScheme.onSurface,
                     title = stringResource(R.string.settings_dark_mode),
                     subtitle = null,
-                    trailing = { Switch(checked = darkMode, onCheckedChange = { darkMode = it }) }
+                    trailing = { Switch(checked = darkMode, onCheckedChange = { vm.setDark(it) }) }
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
                 Row(modifier = Modifier.clickable(onClick = onExportBackup)) {

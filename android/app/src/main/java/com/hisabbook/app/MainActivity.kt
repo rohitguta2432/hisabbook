@@ -28,7 +28,10 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            HisabBookTheme {
+            val darkOverride by prefs.darkMode.collectAsState(initial = null)
+            val systemDark = androidx.compose.foundation.isSystemInDarkTheme()
+            val useDark = darkOverride ?: systemDark
+            HisabBookTheme(darkTheme = useDark) {
                 val lockEnabled by prefs.lockEnabled.collectAsState(initial = true)
                 var unlocked by remember { mutableStateOf(false) }
 
@@ -38,6 +41,7 @@ class MainActivity : FragmentActivity() {
                         onUnlocked = { unlocked = true }
                     )
                 } else {
+                    com.hisabbook.app.ui.components.RequestNotificationPermissionOnce()
                     HisabBookNavHost()
                 }
             }

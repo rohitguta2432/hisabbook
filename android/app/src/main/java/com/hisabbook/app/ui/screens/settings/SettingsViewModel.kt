@@ -30,12 +30,22 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val lockEnabled = prefs.lockEnabled
+    val darkMode = prefs.darkMode
+    val langCode = prefs.langCode
 
     private val _voiceStatus = MutableStateFlow(initialStatus())
     val voiceStatus: StateFlow<VoiceAiStatus> = _voiceStatus.asStateFlow()
 
     fun setLock(enabled: Boolean) {
         viewModelScope.launch { prefs.setLockEnabled(enabled) }
+    }
+
+    fun setDark(enabled: Boolean) {
+        viewModelScope.launch { prefs.setDarkMode(enabled) }
+    }
+
+    fun setLang(code: String) {
+        viewModelScope.launch { prefs.setLangCode(code) }
     }
 
     fun installModel() {

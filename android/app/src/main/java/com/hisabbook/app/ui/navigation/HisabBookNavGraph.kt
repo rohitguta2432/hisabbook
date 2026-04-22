@@ -34,6 +34,7 @@ import com.hisabbook.app.R
 import com.hisabbook.app.data.prefs.AppPreferences
 import com.hisabbook.app.ui.screens.backup.BackupScreen
 import com.hisabbook.app.ui.screens.home.HomeScreen
+import com.hisabbook.app.ui.screens.settings.LanguageScreen
 import com.hisabbook.app.ui.screens.khata.AddPersonScreen
 import com.hisabbook.app.ui.screens.khata.CustomerKhataScreen
 import com.hisabbook.app.ui.screens.khata.KhataListScreen
@@ -58,6 +59,7 @@ object Routes {
     const val MANUAL = "manual"
     const val BACKUP_EXPORT = "backup_export"
     const val BACKUP_IMPORT = "backup_import"
+    const val LANGUAGE = "language"
 
     fun personRoute(id: String) = "$KHATA_PERSON/$id"
 }
@@ -128,6 +130,9 @@ fun HisabBookNavHost(
         composable(Routes.BACKUP_IMPORT) {
             BackupScreen(isExport = false, onBack = { nav.popBackStack() })
         }
+        composable(Routes.LANGUAGE) {
+            LanguageScreen(onBack = { nav.popBackStack() })
+        }
         composable(
             route = "${Routes.KHATA_PERSON}/{personId}",
             arguments = listOf(navArgument("personId") { type = NavType.StringType })
@@ -166,7 +171,8 @@ private fun NavGraphBuilder.mainTabRoutes(nav: NavHostController) {
         SettingsScreen(
             bottomBar = { HisabBottomBar(nav) },
             onExportBackup = { nav.navigate(Routes.BACKUP_EXPORT) },
-            onImportBackup = { nav.navigate(Routes.BACKUP_IMPORT) }
+            onImportBackup = { nav.navigate(Routes.BACKUP_IMPORT) },
+            onOpenLanguage = { nav.navigate(Routes.LANGUAGE) }
         )
     }
 }

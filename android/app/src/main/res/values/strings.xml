@@ -134,6 +134,15 @@
     <string name="settings_lock_sub">Fingerprint ya phone PIN se khulega</string>
     <string name="settings_restore">Backup se Restore karein</string>
     <string name="settings_restore_sub">File se purana hisab le aayein</string>
+    <string name="lang_hi">हिंदी / Hindi</string>
+    <string name="lang_hinglish">Hinglish</string>
+    <string name="lang_ta">தமிழ் / Tamil</string>
+    <string name="lang_te">తెలుగు / Telugu</string>
+    <string name="lang_kn">ಕನ್ನಡ / Kannada</string>
+    <string name="lang_mr">मराठी / Marathi</string>
+    <string name="lang_bn">বাংলা / Bengali</string>
+    <string name="lang_title">Bhasha</string>
+    <string name="lang_coming_soon">Jald aa raha hai</string>
     <string name="backup_passphrase_hint">Passphrase (ek bar yaad rakhein)</string>
     <string name="backup_export_title">Backup Banayein</string>
     <string name="backup_export_cta">Backup Save Karein</string>

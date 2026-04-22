@@ -46,6 +46,7 @@ import com.hisabbook.app.ui.components.OfflineBadge
 import com.hisabbook.app.ui.theme.HisabBookTheme
 import com.hisabbook.app.ui.theme.Secondary
 import com.hisabbook.app.ui.theme.StatusNegativeText
+import com.hisabbook.app.util.formatShort
 import com.hisabbook.app.util.toRupeesString
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -121,6 +122,11 @@ fun HomeScreen(
     }
 }
 
+private fun shortHint(paise: Long): String? {
+    val rupees = kotlin.math.abs(paise) / 100
+    return if (rupees >= 1_000L) formatShort(rupees) else null
+}
+
 @Composable
 private fun StatsGrid(
     bikriPaise: Long,
@@ -133,11 +139,13 @@ private fun StatsGrid(
             StatCard(
                 label = stringResource(R.string.card_aaj_bikri),
                 value = bikriPaise.toRupeesString(),
+                shortText = shortHint(bikriPaise),
                 modifier = Modifier.weight(1f)
             )
             StatCard(
                 label = stringResource(R.string.card_aaj_kharch),
                 value = kharchPaise.toRupeesString(),
+                shortText = shortHint(kharchPaise),
                 valueColor = StatusNegativeText,
                 modifier = Modifier.weight(1f)
             )
@@ -146,12 +154,14 @@ private fun StatsGrid(
             StatCard(
                 label = stringResource(R.string.card_baki_udhar),
                 value = bakiUdharPaise.toRupeesString(),
+                shortText = shortHint(bakiUdharPaise),
                 valueColor = Secondary,
                 modifier = Modifier.weight(1f)
             )
             StatCard(
                 label = stringResource(R.string.card_munafa),
                 value = munafaPaise.toRupeesString(),
+                shortText = shortHint(munafaPaise),
                 modifier = Modifier.weight(1f)
             )
         }
@@ -163,7 +173,8 @@ private fun StatCard(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    valueColor: Color = MaterialTheme.colorScheme.onSurface
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
+    shortText: String? = null
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -179,6 +190,13 @@ private fun StatCard(
                 color = valueColor,
                 fontWeight = FontWeight.ExtraBold
             )
+            if (!shortText.isNullOrBlank()) {
+                Text(
+                    shortText,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

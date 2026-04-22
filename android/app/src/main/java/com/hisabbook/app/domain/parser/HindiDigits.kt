@@ -30,10 +30,10 @@ object HindiDigits {
     fun extractAmount(text: String): Long? {
         val normalized = normalize(text)
 
-        // 1. Arabic digit run with optional scale word
-        Regex("""(\d[\d,]*)(\s*(sau|hazaar|hazar|thousand|lakh|lac|crore|cr|k))?""").find(normalized)?.let { m ->
+        // 1. Arabic digit run with optional scale word (scale must be whole word)
+        Regex("""(\d[\d,]*)(?:\s+(sau|hazaar|hazar|thousand|lakh|lac|crore|cr|k)\b)?""").find(normalized)?.let { m ->
             val num = m.groupValues[1].replace(",", "").toLongOrNull() ?: return@let
-            val scaleWord = m.groupValues[3].takeIf { it.isNotBlank() }
+            val scaleWord = m.groupValues[2].takeIf { it.isNotBlank() }
             val scale = scaleWord?.let { scales[it] } ?: 1L
             return num * scale
         }

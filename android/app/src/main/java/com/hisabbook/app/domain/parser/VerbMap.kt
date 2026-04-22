@@ -31,9 +31,11 @@ object VerbMap {
         }
         // weaker fallback
         return when {
+            "wapas" in t -> EntryType.UDHAR_WAPAS
+            "aaye" in t && "udhar" !in t -> EntryType.UDHAR_WAPAS
+            "mila" in t || "mile" in t -> EntryType.UDHAR_WAPAS
             "udhar" in t || "udhaar" in t -> EntryType.UDHAR_DIYA
             "diya" in t -> EntryType.UDHAR_DIYA
-            "mila" in t || "mile" in t -> EntryType.UDHAR_WAPAS
             else -> null
         }
     }
