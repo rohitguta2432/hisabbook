@@ -46,14 +46,36 @@ private val LightColors = lightColorScheme(
 )
 
 private val DarkColors = darkColorScheme(
-    primary = InversePrimary,
-    onPrimary = Primary,
-    primaryContainer = PrimaryContainer,
-    onPrimaryContainer = PrimaryFixed,
-    background = Color(0xFF101314),
-    onBackground = InverseOnSurface,
-    surface = Color(0xFF101314),
-    onSurface = InverseOnSurface
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
+    inversePrimary = Primary,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
+    secondaryContainer = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
+    tertiary = Tertiary,
+    tertiaryContainer = TertiaryContainer,
+    error = ErrorRed,
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    background = DarkBackground,
+    onBackground = DarkOnSurface,
+    surface = DarkSurface,
+    onSurface = DarkOnSurface,
+    surfaceVariant = DarkSurfaceContainerHighest,
+    onSurfaceVariant = DarkOnSurfaceVariant,
+    inverseSurface = Surface,
+    inverseOnSurface = OnSurface,
+    outline = DarkOutline,
+    outlineVariant = DarkOutlineVariant,
+    surfaceContainerLowest = DarkSurfaceContainerLowest,
+    surfaceContainerLow = DarkSurfaceContainerLow,
+    surfaceContainer = DarkSurfaceContainer,
+    surfaceContainerHigh = DarkSurfaceContainerHigh,
+    surfaceContainerHighest = DarkSurfaceContainerHighest
 )
 
 @Composable
