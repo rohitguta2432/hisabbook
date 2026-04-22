@@ -27,7 +27,3 @@ data class Entry(
     val source: Source = Source.MANUAL
 )
 
-fun Long.toRupeesString(): String {
-    val rupees = this / 100
-    return "₹" + "%,d".format(rupees)
-}

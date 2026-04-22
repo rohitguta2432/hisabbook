@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.hisabbook.app.R
 import com.hisabbook.app.data.model.Entry
 import com.hisabbook.app.data.model.EntryType
-import com.hisabbook.app.data.model.toRupeesString
+import com.hisabbook.app.util.toRupeesString
 import com.hisabbook.app.ui.theme.StatusNegativeText
 import com.hisabbook.app.ui.theme.StatusPositive
 

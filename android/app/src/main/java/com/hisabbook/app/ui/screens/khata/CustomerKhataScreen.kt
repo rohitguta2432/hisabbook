@@ -49,17 +49,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hisabbook.app.R
-import com.hisabbook.app.data.mock.MockData
 import com.hisabbook.app.data.model.Entry
 import com.hisabbook.app.data.model.EntryType
 import com.hisabbook.app.data.model.Person
-import com.hisabbook.app.data.model.toRupeesString
+import com.hisabbook.app.data.model.PersonType
 import com.hisabbook.app.ui.components.EntryEditSheet
 import com.hisabbook.app.ui.components.IntentHelpers
 import com.hisabbook.app.ui.components.OfflineBadge
 import com.hisabbook.app.ui.theme.StatusNegativeText
 import com.hisabbook.app.ui.theme.StatusPositive
+import com.hisabbook.app.util.toRupeesString
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,12 +73,15 @@ fun CustomerKhataScreen(
     personId: String = "p1",
     onBack: () -> Unit,
     onNewEntry: () -> Unit,
-    bottomBar: @Composable () -> Unit
+    bottomBar: @Composable () -> Unit,
+    vm: CustomerKhataViewModel = hiltViewModel()
 ) {
-    val person = MockData.persons.firstOrNull { it.id == personId } ?: MockData.ramesh
-    val entries = MockData.entries.filter { it.personId == person.id }
+    LaunchedEffect(personId) { vm.setPersonId(personId) }
+    val person by vm.person.collectAsState()
+    val entries by vm.entries.collectAsState()
     var editing by remember { mutableStateOf<Entry?>(null) }
     val ctx = LocalContext.current
+    val personSafe = person ?: Person(id = personId, name = "—", phone = null, type = PersonType.CUSTOMER, balancePaise = 0L)
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -89,7 +95,7 @@ fun CustomerKhataScreen(
                     },
                     title = {
                         Text(
-                            "${person.name} ka Khata",
+                            "${personSafe.name} ka Khata",
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.ExtraBold
@@ -120,11 +126,11 @@ fun CustomerKhataScreen(
                 .padding(16.dp)
         ) {
             PersonHeaderCard(
-                person = person,
-                onCall = { person.phone?.let { IntentHelpers.dial(ctx, it) } },
+                person = personSafe,
+                onCall = { personSafe.phone?.let { IntentHelpers.dial(ctx, it) } },
                 onRemind = {
-                    person.phone?.let {
-                        val msg = "Namaste ${person.name} ji. Aapka ${person.balancePaise.toRupeesString()} baki hai. — HisabBook"
+                    personSafe.phone?.let {
+                        val msg = "Namaste ${personSafe.name} ji. Aapka ${personSafe.balancePaise.toRupeesString()} baki hai. — HisabBook"
                         IntentHelpers.whatsappText(ctx, it, msg)
                     }
                 }
@@ -145,8 +151,8 @@ fun CustomerKhataScreen(
             entry = e,
             onDismiss = { editing = null },
             onEdit = { editing = null },
-            onDelete = { editing = null },
-            onSettle = { editing = null }
+            onDelete = { vm.deleteEntry(it); editing = null },
+            onSettle = { vm.settle(it); editing = null }
         )
     }
 }

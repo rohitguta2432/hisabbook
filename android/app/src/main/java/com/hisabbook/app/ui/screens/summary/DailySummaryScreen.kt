@@ -29,7 +29,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hisabbook.app.R
 import com.hisabbook.app.ui.components.IntentHelpers
 import com.hisabbook.app.ui.components.OfflineBadge
@@ -39,14 +42,16 @@ import com.hisabbook.app.ui.theme.StatusNegativeBg
 
 @Composable
 fun DailySummaryScreen(
-    kulBikriPaise: Long = 12_00_000L,
-    kulKharchPaise: Long = 2_50_000L,
-    udharDiyaPaise: Long = 80_000L,
-    jamaPaise: Long = 1_50_000L,
-    munafaPaise: Long = 9_50_000L,
     onShare: (() -> Unit)? = null,
-    bottomBar: @Composable () -> Unit
+    bottomBar: @Composable () -> Unit,
+    vm: SummaryViewModel = hiltViewModel()
 ) {
+    val t by vm.totals.collectAsState()
+    val kulBikriPaise = t.bikriPaise
+    val kulKharchPaise = t.kharchPaise
+    val udharDiyaPaise = t.udharDiyaPaise
+    val jamaPaise = t.jamaPaise
+    val munafaPaise = t.munafaPaise
     val ctx = LocalContext.current
     val doShare: () -> Unit = onShare ?: {
         val msg = buildString {

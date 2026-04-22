@@ -38,23 +38,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hisabbook.app.R
-import com.hisabbook.app.data.model.toRupeesString
 import com.hisabbook.app.ui.components.OfflineBadge
 import com.hisabbook.app.ui.theme.HisabBookTheme
 import com.hisabbook.app.ui.theme.Secondary
 import com.hisabbook.app.ui.theme.StatusNegativeText
+import com.hisabbook.app.util.toRupeesString
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    bikriPaise: Long = 0,
-    kharchPaise: Long = 0,
-    bakiUdharPaise: Long = 0,
-    munafaPaise: Long = 0,
     onBolo: () -> Unit,
-    bottomBar: @Composable () -> Unit
+    bottomBar: @Composable () -> Unit,
+    vm: HomeViewModel = hiltViewModel()
 ) {
+    val state by vm.state.collectAsState()
+    val bikriPaise = state.totals.bikriPaise
+    val kharchPaise = state.totals.kharchPaise
+    val bakiUdharPaise = state.bakiUdharPaise
+    val munafaPaise = state.totals.munafaPaise
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -245,13 +250,3 @@ private fun QuickActionChips() {
     }
 }
 
-@Preview(showBackground = true, heightDp = 850)
-@Composable
-private fun HomePreview() {
-    HisabBookTheme {
-        HomeScreen(
-            onBolo = {},
-            bottomBar = {}
-        )
-    }
-}

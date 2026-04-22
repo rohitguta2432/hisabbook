@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hisabbook.app.R
 import com.hisabbook.app.data.model.EntryType
 
@@ -44,7 +45,8 @@ import com.hisabbook.app.data.model.EntryType
 fun ManualEntryScreen(
     prefilledPersonName: String? = null,
     onBack: () -> Unit,
-    onSaved: () -> Unit
+    onSaved: () -> Unit,
+    vm: ManualEntryViewModel = hiltViewModel()
 ) {
     var type by remember { mutableStateOf(EntryType.UDHAR_DIYA) }
     var amount by remember { mutableStateOf("") }
@@ -127,7 +129,17 @@ fun ManualEntryScreen(
             )
             Spacer(Modifier.weight(1f))
             Button(
-                onClick = { onSaved() },
+                onClick = {
+                    val paise = (amount.toLongOrNull() ?: 0L) * 100L
+                    vm.save(
+                        type = type,
+                        amountPaise = paise,
+                        personName = person.takeIf { it.isNotBlank() },
+                        item = item.ifBlank { type.name.replace("_", " ").lowercase() },
+                        note = note.ifBlank { null }
+                    )
+                    onSaved()
+                },
                 enabled = amount.isNotBlank() && (!personNeeded || person.isNotBlank()),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(

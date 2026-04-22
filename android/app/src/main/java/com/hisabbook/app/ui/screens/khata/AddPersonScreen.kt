@@ -35,11 +35,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hisabbook.app.R
+import com.hisabbook.app.data.model.PersonType
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun AddPersonScreen(onBack: () -> Unit, onSaved: () -> Unit) {
+fun AddPersonScreen(
+    onBack: () -> Unit,
+    onSaved: () -> Unit,
+    vm: AddPersonViewModel = hiltViewModel()
+) {
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var type by remember { mutableIntStateOf(0) }
@@ -101,7 +107,14 @@ fun AddPersonScreen(onBack: () -> Unit, onSaved: () -> Unit) {
             )
             Spacer(Modifier.weight(1f))
             Button(
-                onClick = { onSaved() },
+                onClick = {
+                    vm.save(
+                        name = name.trim(),
+                        phone = phone.trim().ifBlank { null },
+                        type = if (type == 0) PersonType.CUSTOMER else PersonType.SUPPLIER
+                    )
+                    onSaved()
+                },
                 enabled = name.isNotBlank(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
