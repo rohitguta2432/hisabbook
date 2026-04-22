@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HisabBook</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_tagline">Offline Munim for Bharat</string>
+    <string name="onboarding_slide1_title">Bina Internet Chalega</string>
+    <string name="onboarding_slide1_body">Network nahi? Koi baat nahi. HisabBook offline kaam karta hai.</string>
+    <string name="onboarding_slide2_title">Aawaz se Hisab</string>
+    <string name="onboarding_slide2_body">Hindi mein bolo. HisabBook khud entry bana dega.</string>
+    <string name="onboarding_slide3_title">Data Surakshit</string>
+    <string name="onboarding_slide3_body">Aapka data phone mein hi rehta hai. Cloud par nahi.</string>
+    <string name="onboarding_trust">Data phone mein hi rehta hai</string>
+    <string name="onboarding_cta">Shuru Karein</string>
+
+    <!-- Home -->
+    <string name="home_title">HisabBook</string>
+    <string name="home_offline">Offline</string>
+    <string name="card_aaj_bikri">Aaj ki Bikri</string>
+    <string name="card_aaj_kharch">Aaj ka Kharch</string>
+    <string name="card_baki_udhar">Baki Udhar</string>
+    <string name="card_munafa">Munafa</string>
+    <string name="empty_home">Aaj ka hisab shuru karo.\nMic dabao.</string>
+    <string name="chip_bikri_jodo">Bikri Jodo</string>
+    <string name="chip_kharch_jodo">Kharch Jodo</string>
+    <string name="chip_udhar_diya">Udhar Diya</string>
+    <string name="chip_udhar_wapas">Udhar Wapas</string>
+    <string name="fab_bolo">Bolo</string>
+
+    <!-- Nav -->
+    <string name="nav_ghar">Ghar</string>
+    <string name="nav_khata">Khata</string>
+    <string name="nav_hisab">Hisab</string>
+    <string name="nav_setting">Setting</string>
+
+    <!-- Voice entry -->
+    <string name="voice_title">Bolo</string>
+    <string name="voice_listening">Sun rahe hain…</string>
+    <string name="voice_processing">Soch raha hoon…</string>
+    <string name="voice_error_title">Samajh nahi aaya</string>
+    <string name="voice_error_action">Phir se bolo</string>
+    <string name="voice_aapne_bola">Aapne bola:</string>
+    <string name="voice_ye_samjha">Ye samjha:</string>
+    <string name="chip_naam">Naam</string>
+    <string name="chip_rakam">Rakam</string>
+    <string name="chip_kaam">Kaam</string>
+    <string name="chip_cheez">Cheez</string>
+    <string name="voice_cancel">Cancel</string>
+    <string name="voice_confirm">Swipe to Confirm</string>
+
+    <!-- Khata list -->
+    <string name="khata_list_title">Sabka Khata</string>
+    <string name="khata_tab_customers">Grahak</string>
+    <string name="khata_tab_suppliers">Supplier</string>
+    <string name="khata_add_person">Naya Grahak</string>
+    <string name="khata_search_hint">Naam dhoondhe…</string>
+    <string name="khata_empty">Ek bhi grahak nahi. Neeche ka button dabao.</string>
+    <string name="khata_baki_owes_you">ka baki</string>
+    <string name="khata_baki_you_owe">aap par baki</string>
+    <string name="khata_settled">Hisab barabar</string>
+
+    <!-- Add person -->
+    <string name="addperson_title">Naya Grahak</string>
+    <string name="addperson_name_hint">Naam</string>
+    <string name="addperson_phone_hint">Phone (optional)</string>
+    <string name="addperson_type_customer">Grahak</string>
+    <string name="addperson_type_supplier">Supplier</string>
+    <string name="addperson_save">Save</string>
+
+    <!-- Manual entry -->
+    <string name="manual_title">Haath se Likho</string>
+    <string name="manual_type_bikri">Bikri</string>
+    <string name="manual_type_kharch">Kharch</string>
+    <string name="manual_type_udhar_diya">Udhar Diya</string>
+    <string name="manual_type_udhar_wapas">Udhar Wapas</string>
+    <string name="manual_type_udhar_liya">Udhar Liya</string>
+    <string name="manual_type_udhar_chukaya">Udhar Chukaya</string>
+    <string name="manual_amount_hint">Rakam</string>
+    <string name="manual_person_hint">Naam (zaroori ho to)</string>
+    <string name="manual_item_hint">Cheez / Kaam</string>
+    <string name="manual_note_hint">Note (optional)</string>
+    <string name="manual_save">Save</string>
+
+    <!-- Entry edit sheet -->
+    <string name="entry_edit_title">Entry Badlo</string>
+    <string name="entry_delete">Mitao</string>
+    <string name="entry_delete_confirm">Sach mein mitaana hai?</string>
+    <string name="entry_settle">Paisa mil gaya</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+
+    <!-- Voice extra -->
+    <string name="voice_error">Samajh nahi aaya</string>
+    <string name="voice_error_try_again">Phir se bolo</string>
+    <string name="voice_manual_link">Ya haath se likho</string>
+
+    <!-- Khata single -->
+    <string name="khata_ramesh">Ramesh ka Khata</string>
+    <string name="khata_kul_baki">Kul Baki</string>
+    <string name="khata_call">Call</string>
+    <string name="khata_remind">Yaad Dilao</string>
+    <string name="khata_col_date">Tareekh</string>
+    <string name="khata_col_kaam">Kaam</string>
+    <string name="khata_col_rakam">Rakam</string>
+    <string name="khata_col_baki">Baki</string>
+    <string name="khata_swipe_hint">Paisa milne par entry par left swipe karein</string>
+    <string name="khata_new_entry">Naya Hisab</string>
+
+    <!-- Summary -->
+    <string name="summary_title">Aaj ka Hisab</string>
+    <string name="summary_kul_bikri">Kul Bikri</string>
+    <string name="summary_kul_kharch">Kul Kharch</string>
+    <string name="summary_udhar_diya">Udhar Diya</string>
+    <string name="summary_jama">Jama Hua</string>
+    <string name="summary_munafa">Aaj ka Munafa</string>
+    <string name="summary_share">WhatsApp pe Bhejo</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Setting</string>
+    <string name="settings_dukaan_naam">Dukaan ka Naam</string>
+    <string name="settings_dukaan_default">Meri Dukaan</string>
+    <string name="settings_bhasha">Bhasha</string>
+    <string name="settings_bhasha_sub">Aapka hisab</string>
+    <string name="settings_voice_ai">Voice &amp; AI</string>
+    <string name="settings_speed">Bolne ki Speed</string>
+    <string name="settings_speed_normal">Normal</string>
+    <string name="settings_voice_ai_label">Voice AI</string>
+    <string name="settings_voice_ai_ready">Taiyaar ✓</string>
+    <string name="settings_system">System</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_backup">Phone mein Backup</string>
+    <string name="settings_backup_sub">Saara data phone ki file mein save karo</string>
+    <string name="settings_lock">App Lock</string>
+    <string name="settings_lock_sub">Fingerprint ya phone PIN se khulega</string>
+    <string name="settings_version">Version 1.0</string>
+</resources>

@@ -1,0 +1,38 @@
+*.iml
+.gradle/
+/local.properties
+**/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+*.keystore
+*.jks
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Android Studio / IntelliJ
+.idea/
+*.iws
+out/
+
+# Gradle
+/.gradle/
+**/build/
+**/.kotlin/
+
+# Stitch artifacts
+stitch_hisabbook_voice_first_offline_khata.zip
+stitch_hisabbook_voice_first_offline_khata/
+
+# Logs
+*.log
+
+# macOS / Linux
+*.swp
+*~
