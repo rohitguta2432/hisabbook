@@ -14,17 +14,22 @@ import org.vosk.Recognizer
 /** Real Vosk wrapper. Requires model at `filesDir/vosk/hi-small/` copied from assets or PAD.
  *  Model source: https://alphacephei.com/vosk/models/vosk-model-small-hi-0.22.zip (~42 MB). */
 @Singleton
-class VoskSttEngine @Inject constructor(@ApplicationContext private val ctx: Context) : SttEngine {
+class VoskSttEngine @Inject constructor(
+    @ApplicationContext private val ctx: Context,
+    private val installer: ModelInstaller
+) : SttEngine {
 
     private val modelDir: File get() = File(ctx.filesDir, "vosk/hi-small")
     private var cachedModel: Model? = null
 
-    override suspend fun isReady(): Boolean =
-        modelDir.exists() && modelDir.listFiles()?.isNotEmpty() == true
+    override suspend fun isReady(): Boolean {
+        if (installer.isInstalled()) return true
+        if (!installer.assetAvailable()) return false
+        return installer.install().isSuccess
+    }
 
     override suspend fun transcribe(audio: Flow<ByteArray>, langCode: String): String {
         if (!isReady()) {
-            // Drain audio so recorder stops cleanly, return empty so VM hits Error state.
             audio.collect { /* drop */ }
             return ""
         }

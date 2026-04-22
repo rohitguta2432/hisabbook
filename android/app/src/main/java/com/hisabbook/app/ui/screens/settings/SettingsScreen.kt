@@ -58,16 +58,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class SettingsViewModel @Inject constructor(
-    private val prefs: AppPreferences
-) : ViewModel() {
-    val lockEnabled = prefs.lockEnabled
-    fun setLock(enabled: Boolean) {
-        viewModelScope.launch { prefs.setLockEnabled(enabled) }
-    }
-}
-
 @Composable
 fun SettingsScreen(
     bottomBar: @Composable () -> Unit,
@@ -77,6 +67,7 @@ fun SettingsScreen(
 ) {
     var darkMode by remember { mutableStateOf(false) }
     val lockEnabled by vm.lockEnabled.collectAsState(initial = true)
+    val voiceStatus by vm.voiceStatus.collectAsState()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -140,13 +131,25 @@ fun SettingsScreen(
                     trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsItem(
-                    icon = Icons.Default.Mic,
-                    iconBg = SecondaryContainer,
-                    iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = stringResource(R.string.settings_voice_ai_label),
-                    subtitle = stringResource(R.string.settings_voice_ai_ready)
-                )
+                val subtitle = buildString {
+                    append(voiceStatus.tier.name)
+                    append(" · ")
+                    append(if (voiceStatus.modelReady) "Taiyaar ✓"
+                    else if (voiceStatus.assetPresent) "Install karne ke liye tap karo"
+                    else "Model nahi mila")
+                }
+                Row(modifier = Modifier.clickable(
+                    enabled = !voiceStatus.modelReady && voiceStatus.assetPresent,
+                    onClick = { vm.installModel() }
+                )) {
+                    SettingsItem(
+                        icon = Icons.Default.Mic,
+                        iconBg = SecondaryContainer,
+                        iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        title = stringResource(R.string.settings_voice_ai_label),
+                        subtitle = subtitle
+                    )
+                }
             }
 
             SectionLabel(stringResource(R.string.settings_system))
