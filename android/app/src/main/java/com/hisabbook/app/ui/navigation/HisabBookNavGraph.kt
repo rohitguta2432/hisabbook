@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hisabbook.app.R
 import com.hisabbook.app.data.prefs.AppPreferences
+import com.hisabbook.app.ui.screens.backup.BackupScreen
 import com.hisabbook.app.ui.screens.home.HomeScreen
 import com.hisabbook.app.ui.screens.khata.AddPersonScreen
 import com.hisabbook.app.ui.screens.khata.CustomerKhataScreen
@@ -55,6 +56,8 @@ object Routes {
     const val SETTINGS = "settings"
     const val VOICE = "voice"
     const val MANUAL = "manual"
+    const val BACKUP_EXPORT = "backup_export"
+    const val BACKUP_IMPORT = "backup_import"
 
     fun personRoute(id: String) = "$KHATA_PERSON/$id"
 }
@@ -119,6 +122,12 @@ fun HisabBookNavHost(
                 onSaved = { nav.popBackStack() }
             )
         }
+        composable(Routes.BACKUP_EXPORT) {
+            BackupScreen(isExport = true, onBack = { nav.popBackStack() })
+        }
+        composable(Routes.BACKUP_IMPORT) {
+            BackupScreen(isExport = false, onBack = { nav.popBackStack() })
+        }
         composable(
             route = "${Routes.KHATA_PERSON}/{personId}",
             arguments = listOf(navArgument("personId") { type = NavType.StringType })
@@ -154,7 +163,11 @@ private fun NavGraphBuilder.mainTabRoutes(nav: NavHostController) {
         )
     }
     composable(Routes.SETTINGS) {
-        SettingsScreen(bottomBar = { HisabBottomBar(nav) })
+        SettingsScreen(
+            bottomBar = { HisabBottomBar(nav) },
+            onExportBackup = { nav.navigate(Routes.BACKUP_EXPORT) },
+            onImportBackup = { nav.navigate(Routes.BACKUP_IMPORT) }
+        )
     }
 }
 

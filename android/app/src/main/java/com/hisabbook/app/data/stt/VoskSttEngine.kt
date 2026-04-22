@@ -1,33 +1,50 @@
 package com.hisabbook.app.data.stt
 
 import android.content.Context
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONObject
+import org.vosk.Model
+import org.vosk.Recognizer
 
-/** Stub Vosk wrapper.
- *  Real integration: add `com.alphacephei:vosk-android:0.3.47` dep, bundle
- *  `vosk-model-small-hi-0.22` under app/src/main/assets/models/hi-small/, copy to
- *  files dir on first run, and feed PCM bytes to `Recognizer.acceptWaveForm()`.
- *
- *  Currently returns a canned demo transcript so UI flow is testable end-to-end. */
+/** Real Vosk wrapper. Requires model at `filesDir/vosk/hi-small/` copied from assets or PAD.
+ *  Model source: https://alphacephei.com/vosk/models/vosk-model-small-hi-0.22.zip (~42 MB). */
 @Singleton
 class VoskSttEngine @Inject constructor(@ApplicationContext private val ctx: Context) : SttEngine {
 
     private val modelDir: File get() = File(ctx.filesDir, "vosk/hi-small")
+    private var cachedModel: Model? = null
 
-    override suspend fun isReady(): Boolean {
-        // Not ready until real asset copy + vosk-android dep are in place.
-        return modelDir.exists() && modelDir.listFiles()?.isNotEmpty() == true
-    }
+    override suspend fun isReady(): Boolean =
+        modelDir.exists() && modelDir.listFiles()?.isNotEmpty() == true
 
     override suspend fun transcribe(audio: Flow<ByteArray>, langCode: String): String {
-        // Drain the audio flow so AudioRecord gets a chance to run and stop cleanly.
-        var totalBytes = 0
-        audio.collect { totalBytes += it.size }
-        // Demo transcript — real Vosk output goes here when model is wired.
-        return "Ramesh ko do sau ka doodh udhar diya"
+        if (!isReady()) {
+            // Drain audio so recorder stops cleanly, return empty so VM hits Error state.
+            audio.collect { /* drop */ }
+            return ""
+        }
+        val model = cachedModel ?: runCatching { Model(modelDir.absolutePath) }
+            .onSuccess { cachedModel = it }
+            .getOrElse { Log.e(TAG, "Vosk model load failed", it); return "" }
+
+        val recognizer = Recognizer(model, 16_000f)
+        try {
+            audio.collect { chunk ->
+                recognizer.acceptWaveForm(chunk, chunk.size)
+            }
+            val finalJson = recognizer.finalResult
+            return runCatching { JSONObject(finalJson).optString("text") }.getOrDefault("")
+        } finally {
+            runCatching { recognizer.close() }
+        }
+    }
+
+    companion object {
+        private const val TAG = "VoskSttEngine"
     }
 }

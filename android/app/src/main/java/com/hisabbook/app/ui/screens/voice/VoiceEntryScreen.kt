@@ -42,8 +42,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import com.google.accompanist.permissions.isGranted
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -58,15 +60,30 @@ import com.hisabbook.app.ui.components.OfflineBadge
 
 enum class VoiceState { Listening, Processing, Confirm, Error }
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class, com.google.accompanist.permissions.ExperimentalPermissionsApi::class)
 @Composable
 fun VoiceEntryScreen(
-    state: VoiceState = VoiceState.Confirm,
     onClose: () -> Unit,
     onConfirm: () -> Unit,
     onRetry: () -> Unit = {},
-    onManualFallback: () -> Unit = {}
+    onManualFallback: () -> Unit = {},
+    vm: VoiceEntryViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
+    val micPerm = com.google.accompanist.permissions.rememberPermissionState(android.Manifest.permission.RECORD_AUDIO)
+    val ui by vm.state.collectAsState()
+    val state = ui.state
+    val transcript = ui.transcript.ifBlank { "\"Ramesh ko 200 ka doodh udhar diya\"" }
+    val parsed = ui.parsed
+
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        if (!micPerm.status.isGranted) micPerm.launchPermissionRequest()
+        else vm.startListening()
+    }
+    androidx.compose.runtime.LaunchedEffect(micPerm.status.isGranted) {
+        if (micPerm.status.isGranted && ui.state == VoiceState.Listening && ui.transcript.isBlank()) {
+            vm.startListening()
+        }
+    }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -98,8 +115,17 @@ fun VoiceEntryScreen(
             when (state) {
                 VoiceState.Listening -> ListeningBlock()
                 VoiceState.Processing -> ProcessingBlock()
-                VoiceState.Error -> ErrorBlock(onRetry, onManualFallback)
-                VoiceState.Confirm -> ConfirmBlock(onClose, onConfirm, onManualFallback)
+                VoiceState.Error -> ErrorBlock(onRetry = { vm.startListening() }, onManual = onManualFallback)
+                VoiceState.Confirm -> ConfirmBlock(
+                    transcript = transcript,
+                    person = parsed?.person ?: "Ramesh",
+                    amount = parsed?.amountPaise?.let { (it / 100).toString() } ?: "200",
+                    typeLabel = parsed?.type?.name?.replace("_", " ") ?: "Udhar Diya",
+                    item = parsed?.item ?: "Doodh",
+                    onCancel = onClose,
+                    onConfirm = { vm.confirm(); onConfirm() },
+                    onManual = onManualFallback
+                )
             }
         }
     }
@@ -182,7 +208,16 @@ private fun ErrorBlock(onRetry: () -> Unit, onManual: () -> Unit) {
 }
 
 @Composable
-private fun ConfirmBlock(onCancel: () -> Unit, onConfirm: () -> Unit, onManual: () -> Unit) {
+private fun ConfirmBlock(
+    transcript: String,
+    person: String,
+    amount: String,
+    typeLabel: String,
+    item: String,
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+    onManual: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(32.dp))
         MicPulse()
@@ -195,9 +230,9 @@ private fun ConfirmBlock(onCancel: () -> Unit, onConfirm: () -> Unit, onManual: 
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         Spacer(Modifier.weight(1f))
-        TranscriptCard("\"Ramesh ko 200 ka doodh udhar diya\"")
+        TranscriptCard(transcript)
         Spacer(Modifier.height(12.dp))
-        ParsedChipsGrid()
+        ParsedChipsGrid(person = person, amount = amount, typeLabel = typeLabel, item = item)
         Spacer(Modifier.height(12.dp))
         Text(
             stringResource(R.string.voice_manual_link),
@@ -278,7 +313,7 @@ private fun TranscriptCard(text: String) {
 }
 
 @Composable
-private fun ParsedChipsGrid() {
+private fun ParsedChipsGrid(person: String, amount: String, typeLabel: String, item: String) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
@@ -288,13 +323,13 @@ private fun ParsedChipsGrid() {
             Text(stringResource(R.string.voice_ye_samjha), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ParsedChip(Icons.Default.Person, stringResource(R.string.chip_naam), "Ramesh", MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer, Modifier.weight(1f))
-                ParsedChip(Icons.Default.CurrencyRupee, stringResource(R.string.chip_rakam), "200", MaterialTheme.colorScheme.surfaceContainerHigh, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
+                ParsedChip(Icons.Default.Person, stringResource(R.string.chip_naam), person, MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer, Modifier.weight(1f))
+                ParsedChip(Icons.Default.CurrencyRupee, stringResource(R.string.chip_rakam), amount, MaterialTheme.colorScheme.surfaceContainerHigh, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
             }
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ParsedChip(Icons.AutoMirrored.Filled.TrendingUp, stringResource(R.string.chip_kaam), "Udhar Diya", com.hisabbook.app.ui.theme.StatusNegativeBg, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
-                ParsedChip(Icons.Default.Category, stringResource(R.string.chip_cheez), "Doodh", MaterialTheme.colorScheme.surfaceContainerHigh, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
+                ParsedChip(Icons.AutoMirrored.Filled.TrendingUp, stringResource(R.string.chip_kaam), typeLabel, com.hisabbook.app.ui.theme.StatusNegativeBg, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
+                ParsedChip(Icons.Default.Category, stringResource(R.string.chip_cheez), item, MaterialTheme.colorScheme.surfaceContainerHigh, MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
             }
         }
     }

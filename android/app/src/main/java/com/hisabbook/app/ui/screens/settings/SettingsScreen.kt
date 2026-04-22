@@ -1,6 +1,7 @@
 package com.hisabbook.app.ui.screens.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,6 +71,8 @@ class SettingsViewModel @Inject constructor(
 @Composable
 fun SettingsScreen(
     bottomBar: @Composable () -> Unit,
+    onExportBackup: () -> Unit = {},
+    onImportBackup: () -> Unit = {},
     vm: SettingsViewModel = hiltViewModel()
 ) {
     var darkMode by remember { mutableStateOf(false) }
@@ -166,14 +169,27 @@ fun SettingsScreen(
                     trailing = { Switch(checked = darkMode, onCheckedChange = { darkMode = it }) }
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsItem(
-                    icon = Icons.Default.Save,
-                    iconBg = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    iconTint = MaterialTheme.colorScheme.onSurface,
-                    title = stringResource(R.string.settings_backup),
-                    subtitle = stringResource(R.string.settings_backup_sub),
-                    trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
-                )
+                Row(modifier = Modifier.clickable(onClick = onExportBackup)) {
+                    SettingsItem(
+                        icon = Icons.Default.Save,
+                        iconBg = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        iconTint = MaterialTheme.colorScheme.onSurface,
+                        title = stringResource(R.string.settings_backup),
+                        subtitle = stringResource(R.string.settings_backup_sub),
+                        trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    )
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
+                Row(modifier = Modifier.clickable(onClick = onImportBackup)) {
+                    SettingsItem(
+                        icon = Icons.Default.Save,
+                        iconBg = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        iconTint = MaterialTheme.colorScheme.onSurface,
+                        title = stringResource(R.string.settings_restore),
+                        subtitle = stringResource(R.string.settings_restore_sub),
+                        trailing = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    )
+                }
             }
 
             Spacer(Modifier.weight(1f))
