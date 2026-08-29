@@ -48,3 +48,11 @@ APK at `android/app/build/outputs/apk/debug/app-debug.apk`.
 ## License
 
 TBD
+
+---
+
+### 🤝 Work with me
+
+I'm an **AI Consultant · Forward Deployed Engineer** — I embed with teams and ship AI to production: agents, MCP integrations, and LLM features, with evals proving they work.
+
+**→ [rohitraj.tech/en/hire](https://rohitraj.tech/en/hire)**
